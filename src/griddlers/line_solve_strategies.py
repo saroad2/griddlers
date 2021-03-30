@@ -97,3 +97,31 @@ class EdgeStrategy(GriddlersLineSolveStrategy):
                 line[line_index] = CellMark.CROSSED
             line_index += 1
         return line
+
+
+class CompletionIdentificationStrategy(GriddlersLineSolveStrategy):
+
+    def __init__(self):
+        super().__init__(one_way=True)
+
+    def solve_one_way(self, line: CellsLine, instructions: List[int]) -> CellsLine:
+        blocks_starts = [
+            i
+            for i, val in enumerate(line)
+            if val == CellMark.FILLED and (i == 0 or line[i - 1] != CellMark.FILLED)
+        ]
+        blocks_sizes = [
+            self.get_block_size(line, start_index) for start_index in blocks_starts
+        ]
+        if blocks_sizes == instructions:
+            for i, val in enumerate(line):
+                if val == CellMark.EMPTY:
+                    line[i] = CellMark.CROSSED
+        return line
+
+    @classmethod
+    def get_block_size(cls, line: CellsLine, start_index: int):
+        index = start_index
+        while index < len(line) and line[index] == CellMark.FILLED:
+            index += 1
+        return index - start_index
