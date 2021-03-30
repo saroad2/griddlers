@@ -76,3 +76,24 @@ class OverlapStrategy(GriddlersLineSolveStrategy):
     @classmethod
     def inverse_index(cls, index: int, list_length: int):
         return list_length - index - 1
+
+
+class EdgeStrategy(GriddlersLineSolveStrategy):
+
+    def __init__(self):
+        super().__init__(one_way=False)
+
+    def solve_one_way(self, line: CellsLine, instructions: List[int]) -> CellsLine:
+        line_index = 0
+        for instruction in instructions:
+            if line[line_index] != CellMark.FILLED:
+                break
+            block_size = 0
+            while block_size < instruction:
+                line[line_index] = CellMark.FILLED
+                line_index += 1
+                block_size += 1
+            if line_index < len(line):
+                line[line_index] = CellMark.CROSSED
+            line_index += 1
+        return line
