@@ -16,10 +16,9 @@ class GriddlersSolver:
 
     def solve(self, game: GriddlersGame):
         rows_queue, columns_queue = self.get_rows_and_columns_queues(game)
-        while (
-            (len(rows_queue) != 0 or len(columns_queue) != 0)
-            and not game.is_complete
-        ):
+        abort = False
+        while not abort and not game.is_complete:
+            abort = True
             while len(rows_queue) != 0:
                 row_index = rows_queue.pop()
                 row, row_instructions = game.get_row_and_instructions(
@@ -28,8 +27,8 @@ class GriddlersSolver:
                 result_row = self.run_strategies(row, row_instructions)
                 differ_indices = self.calculate_differ_indices(row, result_row)
                 if len(differ_indices) != 0:
+                    abort = False
                     game.set_row(row_index=row_index, row=result_row)
-                    rows_queue.add(row_index)
                     for i in differ_indices:
                         columns_queue.add(i)
             while len(columns_queue) != 0:
@@ -40,12 +39,19 @@ class GriddlersSolver:
                 result_column = self.run_strategies(column, column_instructions)
                 differ_indices = self.calculate_differ_indices(column, result_column)
                 if len(differ_indices) != 0:
+                    abort = False
                     game.set_column(column_index=column_index, column=result_column)
-                    columns_queue.add(column_index)
                     for i in differ_indices:
                         rows_queue.add(i)
 
     def run_strategies(self, line: CellsLine, instructions: List[int]):
+        result_line = self.run_strategies_once(line=line, instructions=instructions)
+        while result_line != line:
+            line = result_line
+            result_line = self.run_strategies_once(line=line, instructions=instructions)
+        return result_line
+
+    def run_strategies_once(self, line: CellsLine, instructions: List[int]):
         if line.is_completed:
             return line
         for strategy in self.strategies:
