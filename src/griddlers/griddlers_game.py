@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 from typing import List, Union
 
-from griddlers.cell_mark import CellsLine
+from griddlers.cells_line import CellsLine
 from griddlers.griddlers_board import GriddlersBoard
 
 

@@ -1,7 +1,8 @@
 from copy import deepcopy
 from typing import List
 
-from griddlers.cell_mark import CellMark, CellsLine
+from griddlers.cells_line import CellsLine
+from griddlers.cell_mark import CellMark
 
 
 class GriddlersLineSolveStrategy:

@@ -1,6 +1,6 @@
 from typing import List
 
-from griddlers.cell_mark import CellsLine
+from griddlers.cells_line import CellsLine
 from griddlers.griddlers_game import GriddlersGame
 from griddlers.line_solve_strategies import (
     CompletionIdentificationStrategy, EdgeStrategy, OverlapStrategy

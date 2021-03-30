@@ -1,6 +1,7 @@
 import pytest
 
-from griddlers.cell_mark import CellMark, CellsLine
+from griddlers.cells_line import CellsLine
+from griddlers.cell_mark import CellMark
 from griddlers.griddlers_board import GriddlersBoard
 
 

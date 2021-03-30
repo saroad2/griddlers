@@ -1,5 +1,5 @@
 from pytest_cases import parametrize_with_cases
-from griddlers.cell_mark import CellsLine
+from griddlers.cells_line import CellsLine
 from griddlers.line_solve_strategies import CompletionIdentificationStrategy
 
 

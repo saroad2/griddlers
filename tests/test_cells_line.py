@@ -1,4 +1,5 @@
-from griddlers.cell_mark import CellMark, CellsLine
+from griddlers.cells_line import CellsLine
+from griddlers.cell_mark import CellMark
 
 
 def test_parse_cells_line():
