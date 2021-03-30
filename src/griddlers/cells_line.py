@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List
+from typing import List, Union
 
 from griddlers.cell_mark import CellMark
 from griddlers.cells_section import CellsSection
@@ -46,8 +46,12 @@ class CellsLine:
     def inverse(self) -> "CellsLine":
         return CellsLine(cells=self.cells[::-1])
 
-    def __getitem__(self, index: int):
-        return self.cells[index]
+    def __getitem__(self, key: Union[int, slice]):
+        if isinstance(key, slice):
+            return CellsLine(
+                cells=[self.cells[i] for i in range(key.start, key.stop + 1)]
+            )
+        return self.cells[key]
 
     def __setitem__(self, index: int, value: CellMark):
         self.cells[index] = value

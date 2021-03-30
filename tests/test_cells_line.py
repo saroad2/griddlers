@@ -153,3 +153,8 @@ def test_cells_line_contains():
     cells_line[1] = CellMark.CROSSED
 
     assert CellMark.CROSSED in cells_line
+
+
+def test_slice_cells_line():
+    cells_line = CellsLine.parse_line("X__OXO_X")
+    assert cells_line[1: 5] == CellsLine.parse_line("__OXO")
