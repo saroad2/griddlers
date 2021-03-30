@@ -142,3 +142,14 @@ def test_cells_line_empty_sections():
         CellsSection(start=1, end=2, mark=CellMark.EMPTY),
         CellsSection(start=6, end=6, mark=CellMark.EMPTY),
     ]
+
+
+def test_cells_line_contains():
+    cells_line = CellsLine.parse_line("___OOO_O")
+    assert CellMark.EMPTY in cells_line
+    assert CellMark.FILLED in cells_line
+    assert CellMark.CROSSED not in cells_line
+
+    cells_line[1] = CellMark.CROSSED
+
+    assert CellMark.CROSSED in cells_line
