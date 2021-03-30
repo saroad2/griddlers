@@ -106,18 +106,12 @@ class CompletionIdentificationStrategy(GriddlersLineSolveStrategy):
         super().__init__(one_way=True)
 
     def solve_one_way(self, line: CellsLine, instructions: List[int]) -> CellsLine:
-        blocks_starts = [
-            i
-            for i, val in enumerate(line)
-            if val == CellMark.FILLED and (i == 0 or line[i - 1] != CellMark.FILLED)
-        ]
-        blocks_sizes = [
-            self.get_block_size(line, start_index) for start_index in blocks_starts
-        ]
-        if blocks_sizes == instructions:
-            for i, val in enumerate(line):
-                if val == CellMark.EMPTY:
-                    line[i] = CellMark.CROSSED
+        blocks_sizes = [section.length for section in line.filled_sections]
+        if blocks_sizes != instructions:
+            return line
+        for section in line.empty_sections:
+            for i in section:
+                line[i] = CellMark.CROSSED
         return line
 
     @classmethod
