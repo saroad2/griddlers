@@ -51,6 +51,14 @@ def case_one_cell_start_fill_all():
     return line, instructions, result_line
 
 
+def case_three_blocks_start_combined():
+    line = "OOXXO_O___"
+    instructions = [2, 3]
+    result_line = "OOXXOOOX__"
+
+    return line, instructions, result_line
+
+
 def case_one_cell_end():
     line = "______O"
     instructions = [3, 2]

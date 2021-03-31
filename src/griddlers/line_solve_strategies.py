@@ -87,9 +87,9 @@ class EdgeStrategy(GriddlersLineSolveStrategy):
 
     def solve_one_way(self, line: CellsLine, instructions: List[int]) -> CellsLine:
         line_index = 0
-        while line[line_index] == CellMark.CROSSED:
-            line_index += 1
         for instruction in instructions:
+            while line[line_index] == CellMark.CROSSED:
+                line_index += 1
             if line[line_index] != CellMark.FILLED:
                 break
             block_size = 0
