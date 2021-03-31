@@ -18,7 +18,7 @@ class GriddlersBoard:
 
     def get_row(self, row_index: int) -> CellsLine:
         return CellsLine(
-            cells=[
+            [
                 self[(row_index, j)] for j in range(self.columns)
             ]
         )
@@ -29,7 +29,7 @@ class GriddlersBoard:
 
     def get_column(self, column_index: int) -> CellsLine:
         return CellsLine(
-            cells=[
+            [
                 self[(j, column_index)] for j in range(self.rows)
             ]
         )

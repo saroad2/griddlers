@@ -5,33 +5,35 @@ from griddlers.cell_mark import CellMark
 from griddlers.cells_section import CellsSection
 
 
-@dataclass(repr=False)
-class CellsLine:
+class CellsLine(list):
 
     cells: List[CellMark] = field(default_factory=list)
-
+    
+    def __init__(self, items: List[CellMark] = None):
+        super().__init__(items)
+        
     @classmethod
     def parse_line(cls, line: str) -> "CellsLine":
-        return CellsLine(cells=[CellMark(val) for val in line])
+        return CellsLine([CellMark(val) for val in line])
 
     @property
     def is_completed(self):
-        return all(cell != CellMark.EMPTY for cell in self.cells)
+        return all(cell != CellMark.EMPTY for cell in self)
 
     @property
     def sections(self):
         sections = []
-        if len(self.cells) == 0:
+        if len(self) == 0:
             return sections
         start_index = 0
-        mark = self.cells[0]
-        for i in range(1, len(self.cells)):
-            if self.cells[i] != mark:
+        mark = self[0]
+        for i in range(1, len(self)):
+            if self[i] != mark:
                 sections.append(CellsSection(start=start_index, end=i - 1, mark=mark))
                 start_index = i
-                mark = self.cells[i]
+                mark = self[i]
         sections.append(
-            CellsSection(start=start_index, end=len(self.cells) - 1, mark=mark)
+            CellsSection(start=start_index, end=len(self) - 1, mark=mark)
         )
         return sections
 
@@ -44,20 +46,17 @@ class CellsLine:
         return [section for section in self.sections if section.mark == CellMark.EMPTY]
 
     def inverse(self) -> "CellsLine":
-        return CellsLine(cells=self.cells[::-1])
+        return CellsLine(self[::-1])
 
     def __getitem__(self, key: Union[int, slice]):
         if isinstance(key, slice):
-            return CellsLine(
-                cells=[self.cells[i] for i in range(key.start, key.stop + 1)]
-            )
-        return self.cells[key]
-
-    def __setitem__(self, index: int, value: CellMark):
-        self.cells[index] = value
-
-    def __len__(self):
-        return len(self.cells)
+            return CellsLine(super().__getitem__(key))
+        return super().__getitem__(key)
 
     def __repr__(self):
-        return "".join(cell.value for cell in self.cells)
+        return "".join(cell.value for cell in self)
+
+    def __eq__(self, other):
+        if not isinstance(other, CellsLine):
+            return False
+        return super().__eq__(other)

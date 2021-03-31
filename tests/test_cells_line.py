@@ -5,7 +5,7 @@ from griddlers.cells_section import CellsSection
 
 def test_parse_cells_line():
     assert CellsLine.parse_line("X__OOO_X") == CellsLine(
-        cells=[
+        [
             CellMark.CROSSED,
             CellMark.EMPTY,
             CellMark.EMPTY,
@@ -20,7 +20,7 @@ def test_parse_cells_line():
 
 def test_cells_line_to_str():
     cell_line = CellsLine(
-        cells=[
+        [
             CellMark.CROSSED,
             CellMark.EMPTY,
             CellMark.EMPTY,
@@ -36,7 +36,7 @@ def test_cells_line_to_str():
 
 def test_cells_line_is_not_completed():
     cell_line = CellsLine(
-        cells=[
+        [
             CellMark.CROSSED,
             CellMark.EMPTY,
             CellMark.EMPTY,
@@ -52,7 +52,7 @@ def test_cells_line_is_not_completed():
 
 def test_cells_line_is_completed():
     cell_line = CellsLine(
-        cells=[
+        [
             CellMark.CROSSED,
             CellMark.CROSSED,
             CellMark.FILLED,
@@ -157,4 +157,4 @@ def test_cells_line_contains():
 
 def test_slice_cells_line():
     cells_line = CellsLine.parse_line("X__OXO_X")
-    assert cells_line[1: 5] == CellsLine.parse_line("__OXO")
+    assert cells_line[1: 5] == CellsLine.parse_line("__OX")
