@@ -110,12 +110,15 @@ def test_cells_line_convert_to_list():
 
 
 def test_cells_line_sections():
-    assert CellsLine.parse_line("X__OOO_X").sections == [
-        CellsSection(start=0, end=0, mark=CellMark.CROSSED),
-        CellsSection(start=1, end=2, mark=CellMark.EMPTY),
-        CellsSection(start=3, end=5, mark=CellMark.FILLED),
-        CellsSection(start=6, end=6, mark=CellMark.EMPTY),
-        CellsSection(start=7, end=7, mark=CellMark.CROSSED),
+    assert CellsLine.parse_line("X_OX_OOO_X").sections == [
+        CellsSection(start=0, end=0, mark=CellMark.CROSSED, blocked_below=True),
+        CellsSection(start=1, end=1, mark=CellMark.EMPTY, blocked_below=True),
+        CellsSection(start=2, end=2, mark=CellMark.FILLED, blocked_above=True),
+        CellsSection(start=3, end=3, mark=CellMark.CROSSED),
+        CellsSection(start=4, end=4, mark=CellMark.EMPTY, blocked_below=True),
+        CellsSection(start=5, end=7, mark=CellMark.FILLED),
+        CellsSection(start=8, end=8, mark=CellMark.EMPTY, blocked_above=True),
+        CellsSection(start=9, end=9, mark=CellMark.CROSSED, blocked_above=True),
     ]
 
 
@@ -123,24 +126,24 @@ def test_cells_line_sections_after_set():
     cells_line = CellsLine.parse_line("X__OOO_X")
     cells_line[6] = CellMark.FILLED
     assert cells_line.sections == [
-        CellsSection(start=0, end=0, mark=CellMark.CROSSED),
-        CellsSection(start=1, end=2, mark=CellMark.EMPTY),
-        CellsSection(start=3, end=6, mark=CellMark.FILLED),
-        CellsSection(start=7, end=7, mark=CellMark.CROSSED),
+        CellsSection(start=0, end=0, mark=CellMark.CROSSED, blocked_below=True),
+        CellsSection(start=1, end=2, mark=CellMark.EMPTY, blocked_below=True),
+        CellsSection(start=3, end=6, mark=CellMark.FILLED, blocked_above=True),
+        CellsSection(start=7, end=7, mark=CellMark.CROSSED, blocked_above=True),
     ]
 
 
 def test_cells_line_filled_sections():
     assert CellsLine.parse_line("X_OOXO_X").filled_sections == [
-        CellsSection(start=2, end=3, mark=CellMark.FILLED),
-        CellsSection(start=5, end=5, mark=CellMark.FILLED),
+        CellsSection(start=2, end=3, mark=CellMark.FILLED, blocked_above=True),
+        CellsSection(start=5, end=5, mark=CellMark.FILLED, blocked_below=True),
     ]
 
 
 def test_cells_line_empty_sections():
     assert CellsLine.parse_line("X__OXO_X").empty_sections == [
-        CellsSection(start=1, end=2, mark=CellMark.EMPTY),
-        CellsSection(start=6, end=6, mark=CellMark.EMPTY),
+        CellsSection(start=1, end=2, mark=CellMark.EMPTY, blocked_below=True),
+        CellsSection(start=6, end=6, mark=CellMark.EMPTY, blocked_above=True),
     ]
 
 

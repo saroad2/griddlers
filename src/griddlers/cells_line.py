@@ -29,11 +29,32 @@ class CellsLine(list):
         mark = self[0]
         for i in range(1, len(self)):
             if self[i] != mark:
-                sections.append(CellsSection(start=start_index, end=i - 1, mark=mark))
+                sections.append(
+                    CellsSection(
+                        start=start_index,
+                        end=i - 1,
+                        mark=mark,
+                        blocked_below=(
+                            start_index == 0
+                            or self[start_index - 1] == CellMark.CROSSED
+                        ),
+                        blocked_above=self[i] == CellMark.CROSSED
+                    )
+                )
                 start_index = i
                 mark = self[i]
+
         sections.append(
-            CellsSection(start=start_index, end=len(self) - 1, mark=mark)
+            CellsSection(
+                start=start_index,
+                end=len(self) - 1,
+                mark=mark,
+                blocked_below=(
+                        start_index == 0
+                        or self[start_index - 1] == CellMark.CROSSED
+                ),
+                blocked_above=True
+            )
         )
         return sections
 
