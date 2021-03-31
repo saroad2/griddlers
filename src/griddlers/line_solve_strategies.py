@@ -183,3 +183,53 @@ class MaxSectionIdentifierStrategy(GriddlersLineSolveStrategy):
             if not section.blocked_above:
                 line[section.end + 1] = CellMark.CROSSED
         return line
+
+
+class GapsFillerStrategy(GriddlersLineSolveStrategy):
+
+    def __init__(self):
+        super().__init__(one_way=False)
+
+    def solve_one_way(self, line: CellsLine, instructions: List[int]) -> CellsLine:
+        if line.is_completed:
+            return line
+        first_empty_section = line.empty_sections[0]
+        if (
+            first_empty_section.start != 0
+            and line[first_empty_section.start - 1] == CellMark.FILLED
+        ):
+            return line
+        number_of_known_instructions = len(
+            [
+                section for section in line.filled_sections
+                if section.end < first_empty_section.start
+            ]
+        )
+        remaining_instructions = instructions[number_of_known_instructions:]
+        if len(remaining_instructions) == 0:
+            return line
+        first_remaining_instruction = remaining_instructions[0]
+        min_remaining_instruction = min(remaining_instructions)
+        remaining_sections = [
+            section for section in line.sections
+            if section.start >= first_empty_section.start
+        ]
+        fill_first_gap = True
+        for section in remaining_sections:
+            if section.mark == CellMark.FILLED:
+                fill_first_gap = False
+                continue
+            if section.mark == CellMark.CROSSED:
+                continue
+            if not section.blocked:
+                fill_first_gap = False
+                continue
+            if section.length >= first_remaining_instruction:
+                fill_first_gap = False
+            if (
+                section.length < min_remaining_instruction
+                or (fill_first_gap and section.length < first_remaining_instruction)
+            ):
+                for i in section:
+                    line[i] = CellMark.CROSSED
+        return line

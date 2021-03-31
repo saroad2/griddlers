@@ -4,6 +4,7 @@ from griddlers.cells_line import CellsLine
 from griddlers.griddlers_game import GriddlersGame
 from griddlers.line_solve_strategies import (
     EdgeStrategy,
+    GapsFillerStrategy,
     MaxSectionIdentifierStrategy,
     SectionsIdentificationStrategy,
     OverlapStrategy
@@ -16,6 +17,7 @@ class GriddlersSolver:
         self.strategies = [
             OverlapStrategy(),
             EdgeStrategy(),
+            GapsFillerStrategy(),
             MaxSectionIdentifierStrategy(),
             SectionsIdentificationStrategy(),
         ]
