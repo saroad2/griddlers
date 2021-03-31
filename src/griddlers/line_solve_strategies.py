@@ -158,3 +158,29 @@ class SectionsIdentificationStrategy(GriddlersLineSolveStrategy):
             gap >= instruction - section.length
             and gap >= next_instruction - next_section.length
         )
+
+
+class MaxSectionIdentifierStrategy(GriddlersLineSolveStrategy):
+
+    def __init__(self):
+        super().__init__(one_way=True)
+
+    def solve_one_way(self, line: CellsLine, instructions: List[int]) -> CellsLine:
+        known_sections_sizes = [
+            section.length for section in line.filled_sections if section.blocked
+        ]
+        remaining_instructions = [
+            instruction for instruction in instructions
+            if instruction not in known_sections_sizes
+        ]
+        if len(remaining_instructions) == 0:
+            return line
+        max_instruction = max(remaining_instructions)
+        for section in line.filled_sections:
+            if section.length != max_instruction:
+                continue
+            if not section.blocked_below:
+                line[section.start - 1] = CellMark.CROSSED
+            if not section.blocked_above:
+                line[section.end + 1] = CellMark.CROSSED
+        return line
