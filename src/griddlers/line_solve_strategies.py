@@ -215,14 +215,26 @@ class GapsFillerStrategy(GriddlersLineSolveStrategy):
             if section.start >= first_empty_section.start
         ]
         fill_first_gap = True
-        for section in remaining_sections:
+        for i in range(len(remaining_sections)):
+            section = remaining_sections[i]
             if section.mark == CellMark.FILLED:
+                if not fill_first_gap:
+                    continue
                 fill_first_gap = False
+                previous_section = remaining_sections[i - 1]
+                if (
+                    previous_section.mark == CellMark.EMPTY
+                    and previous_section.length < first_remaining_instruction
+                ):
+                    for j in range(
+                        section.start,
+                        previous_section.start + first_remaining_instruction
+                    ):
+                        line[j] = CellMark.FILLED
                 continue
             if section.mark == CellMark.CROSSED:
                 continue
             if not section.blocked:
-                fill_first_gap = False
                 continue
             if section.length >= first_remaining_instruction:
                 fill_first_gap = False
@@ -230,6 +242,6 @@ class GapsFillerStrategy(GriddlersLineSolveStrategy):
                 section.length < min_remaining_instruction
                 or (fill_first_gap and section.length < first_remaining_instruction)
             ):
-                for i in section:
-                    line[i] = CellMark.CROSSED
+                for j in section:
+                    line[j] = CellMark.CROSSED
         return line

@@ -59,6 +59,30 @@ def case_last_is_known():
     return line, instructions, result_line
 
 
+def case_extend_first_filled_section():
+    line = "_O_________"
+    instructions = [4, 2]
+    result_line = "_OOO_______"
+
+    return line, instructions, result_line
+
+
+def case_extend_second_filled_section():
+    line = "XOOX__O______"
+    instructions = [2, 4, 2]
+    result_line = "XOOX__OO_____"
+
+    return line, instructions, result_line
+
+
+def case_extend_last_filled_section():
+    line = "_________O_"
+    instructions = [2, 4]
+    result_line = "_______OOO_"
+
+    return line, instructions, result_line
+
+
 @parametrize_with_cases(argnames=["line", "instructions", "result_line"], cases=".")
 def test_gaps_filler_strategy(line, instructions, result_line):
     gaps_filler_strategy = GapsFillerStrategy()
