@@ -11,6 +11,14 @@ def case_one_cell_start():
     return line, instructions, result_line
 
 
+def case_one_cell_start_after_crossed():
+    line = "XO______"
+    instructions = [3, 2]
+    result_line = "XOOOX___"
+
+    return line, instructions, result_line
+
+
 def case_one_block_start():
     line = "OO_____"
     instructions = [3, 2]
@@ -47,6 +55,14 @@ def case_one_cell_end():
     line = "______O"
     instructions = [3, 2]
     result_line = "____XOO"
+
+    return line, instructions, result_line
+
+
+def case_one_cell_end_before_crossed():
+    line = "______OX"
+    instructions = [3, 2]
+    result_line = "____XOOX"
 
     return line, instructions, result_line
 
