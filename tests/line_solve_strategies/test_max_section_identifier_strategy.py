@@ -43,6 +43,14 @@ def case_identify_max_not_identified():
     return line, instructions, result_line
 
 
+def case_two_maxes():
+    line = "___XOOOX__OOO_____"
+    instructions = [3, 3, 2]
+    result_line = "___XOOOX_XOOOX____"
+
+    return line, instructions, result_line
+
+
 def case_completed_line():
     line = "XXXOOOXOOX"
     instructions = [3, 2]

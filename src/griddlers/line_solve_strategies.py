@@ -169,10 +169,9 @@ class MaxSectionIdentifierStrategy(GriddlersLineSolveStrategy):
         known_sections_sizes = [
             section.length for section in line.filled_sections if section.blocked
         ]
-        remaining_instructions = [
-            instruction for instruction in instructions
-            if instruction not in known_sections_sizes
-        ]
+        remaining_instructions = list(instructions)
+        for instruction in known_sections_sizes:
+            remaining_instructions.remove(instruction)
         if len(remaining_instructions) == 0:
             return line
         max_instruction = max(remaining_instructions)
