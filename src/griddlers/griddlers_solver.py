@@ -3,7 +3,7 @@ from typing import List
 from griddlers.cells_line import CellsLine
 from griddlers.griddlers_game import GriddlersGame
 from griddlers.line_solve_strategies import (
-    CompletionIdentificationStrategy, EdgeStrategy, OverlapStrategy
+    EdgeStrategy, SectionsIdentificationStrategy, OverlapStrategy
 )
 
 
@@ -11,7 +11,7 @@ class GriddlersSolver:
 
     def __init__(self):
         self.strategies = [
-            OverlapStrategy(), EdgeStrategy(), CompletionIdentificationStrategy()
+            OverlapStrategy(), EdgeStrategy(), SectionsIdentificationStrategy()
         ]
 
     def solve(self, game: GriddlersGame):

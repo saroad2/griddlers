@@ -3,6 +3,7 @@ from typing import List
 
 from griddlers.cells_line import CellsLine
 from griddlers.cell_mark import CellMark
+from griddlers.cells_section import CellsSection
 
 
 class GriddlersLineSolveStrategy:
@@ -100,23 +101,58 @@ class EdgeStrategy(GriddlersLineSolveStrategy):
         return line
 
 
-class CompletionIdentificationStrategy(GriddlersLineSolveStrategy):
+class SectionsIdentificationStrategy(GriddlersLineSolveStrategy):
 
     def __init__(self):
         super().__init__(one_way=True)
 
     def solve_one_way(self, line: CellsLine, instructions: List[int]) -> CellsLine:
-        blocks_sizes = [section.length for section in line.filled_sections]
-        if blocks_sizes != instructions:
+        filled_sections = line.filled_sections
+        if len(filled_sections) != len(instructions):
             return line
-        for section in line.empty_sections:
-            for i in section:
-                line[i] = CellMark.CROSSED
+        for i in range(0, len(filled_sections) - 1):
+            section, next_section = filled_sections[i], filled_sections[i + 1]
+            instruction, next_instruction = instructions[i], instructions[i + 1]
+            if not self.splitted_sections(
+                line=line,
+                section=section,
+                next_section=next_section,
+                instruction=instruction,
+                next_instruction=next_instruction,
+            ):
+                return line
+
+        for i in range(0, len(filled_sections) - 1):
+            section, next_section = filled_sections[i], filled_sections[i + 1]
+            instruction, next_instruction = instructions[i], instructions[i + 1]
+            cross_start = section.end + instruction - section.length + 1
+            cross_end = next_section.start - next_instruction + next_section.length
+            for j in range(cross_start, cross_end):
+                line[j] = CellMark.CROSSED
+        first_section, last_section = filled_sections[0], filled_sections[-1]
+        first_instruction, last_instruction = instructions[0], instructions[-1]
+        first_cross_end = first_section.start - first_instruction + first_section.length
+        if 0 < first_cross_end <= first_section.start:
+            for j in range(0, first_cross_end):
+                line[j] = CellMark.CROSSED
+        last_cross_start = last_section.end + last_instruction - last_section.length + 1
+        if last_section.end < last_cross_start < len(line):
+            for j in range(last_cross_start, len(line)):
+                line[j] = CellMark.CROSSED
         return line
 
-    @classmethod
-    def get_block_size(cls, line: CellsLine, start_index: int):
-        index = start_index
-        while index < len(line) and line[index] == CellMark.FILLED:
-            index += 1
-        return index - start_index
+    def splitted_sections(
+        self,
+        line: CellsLine,
+        section: CellsSection,
+        next_section: CellsSection,
+        instruction: int,
+        next_instruction: int,
+    ):
+        if CellMark.CROSSED in line[section.end + 1: next_section.start - 1]:
+            return True
+        gap = next_section.start - section.end - 1
+        return (
+            gap >= instruction - section.length
+            and gap >= next_instruction - next_section.length
+        )
