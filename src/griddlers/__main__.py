@@ -1,7 +1,14 @@
 import click
 
+from griddlers.cell_mark import CellMark
 from griddlers.griddlers_game import GriddlersGame
 from griddlers.griddlers_solver import GriddlersSolver
+
+
+def color_fill(char):
+    if char == CellMark.FILLED.value:
+        return click.style(char, fg="yellow")
+    return char
 
 
 @click.command("solve")
@@ -15,7 +22,8 @@ def solve_cli(game_file):
         click.echo(click.style("Finished game!", fg="green"))
     else:
         click.echo(click.style("Game lost...", fg="red"))
-    click.echo(game.board_string())
+    for line in game.board_string().split("\n"):
+        click.echo(''.join(color_fill(char) for char in line))
 
 
 solve_cli()
