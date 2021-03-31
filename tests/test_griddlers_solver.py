@@ -14,4 +14,4 @@ def test_griddlers_solver(game_path):
     solver = GriddlersSolver()
 
     solver.solve(game)
-    assert game.is_complete, f"Game is not complete:\n{game.board_string()}"
+    assert game.is_won, f"Game is not complete:\n{game.board_string()}"

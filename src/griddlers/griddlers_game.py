@@ -29,6 +29,18 @@ class GriddlersGame:
     def is_complete(self):
         return self.board.is_completed
 
+    @property
+    def is_won(self):
+        for row, row_instructions in self.iterate_rows():
+            if [section.length for section in row.filled_sections] != row_instructions:
+                return False
+        for column, column_instructions in self.iterate_columns():
+            if [
+                section.length for section in column.filled_sections
+            ] != column_instructions:
+                return False
+        return True
+
     def get_row_and_instructions(self, row_index: int):
         return self.board.get_row(row_index), self.rows_instructions[row_index]
 
@@ -36,6 +48,14 @@ class GriddlersGame:
         return (
             self.board.get_column(column_index), self.columns_instructions[column_index]
         )
+
+    def iterate_rows(self):
+        for i in range(self.rows):
+            yield self.get_row_and_instructions(i)
+
+    def iterate_columns(self):
+        for i in range(self.rows):
+            yield self.get_row_and_instructions(i)
 
     def set_row(self, row_index: int, row: CellsLine):
         self.board.set_row(row_index=row_index, row=row)

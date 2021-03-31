@@ -18,7 +18,7 @@ def solve_cli(game_file):
     solver = GriddlersSolver()
 
     solver.solve(game)
-    if game.is_complete:
+    if game.is_won:
         click.echo(click.style("Finished game!", fg="green"))
     else:
         click.echo(click.style("Game lost...", fg="red"))
