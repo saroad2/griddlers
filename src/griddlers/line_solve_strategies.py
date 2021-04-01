@@ -35,8 +35,7 @@ class OverlapStrategy(GriddlersLineSolveStrategy):
             start_index = self.get_start_index(line, instructions, instruction_index)
             if start_index > end_index:
                 continue
-            for i in range(start_index, end_index + 1):
-                line[i] = CellMark.FILLED
+            line.mark_inclusive(start_index, end_index, CellMark.FILLED)
         return line
 
     def get_start_index(
@@ -128,19 +127,16 @@ class SectionsIdentificationStrategy(GriddlersLineSolveStrategy):
             section, next_section = filled_sections[i], filled_sections[i + 1]
             instruction, next_instruction = instructions[i], instructions[i + 1]
             cross_start = section.end + instruction - section.length + 1
-            cross_end = next_section.start - next_instruction + next_section.length
-            for j in range(cross_start, cross_end):
-                line[j] = CellMark.CROSSED
+            cross_end = next_section.start - next_instruction + next_section.length - 1
+            line.mark_inclusive(cross_start, cross_end, CellMark.CROSSED)
         first_section, last_section = filled_sections[0], filled_sections[-1]
         first_instruction, last_instruction = instructions[0], instructions[-1]
-        first_cross_end = first_section.start - first_instruction + first_section.length
-        if 0 < first_cross_end <= first_section.start:
-            for j in range(0, first_cross_end):
-                line[j] = CellMark.CROSSED
+        first_cross_end = first_section.start - first_instruction + first_section.length - 1
+        if 0 <= first_cross_end < first_section.start:
+            line.mark_inclusive(0, first_cross_end, CellMark.CROSSED)
         last_cross_start = last_section.end + last_instruction - last_section.length + 1
         if last_section.end < last_cross_start < len(line):
-            for j in range(last_cross_start, len(line)):
-                line[j] = CellMark.CROSSED
+            line.mark_inclusive(last_cross_start, len(line) - 1, CellMark.CROSSED)
         return line
 
     def splitted_sections(
@@ -226,11 +222,11 @@ class GapsFillerStrategy(GriddlersLineSolveStrategy):
                     previous_section.mark == CellMark.EMPTY
                     and previous_section.length < first_remaining_instruction
                 ):
-                    for j in range(
+                    line.mark_inclusive(
                         section.start,
-                        previous_section.start + first_remaining_instruction
-                    ):
-                        line[j] = CellMark.FILLED
+                        previous_section.start + first_remaining_instruction - 1,
+                        CellMark.FILLED
+                    )
                 continue
             if section.mark == CellMark.CROSSED:
                 continue
@@ -242,6 +238,5 @@ class GapsFillerStrategy(GriddlersLineSolveStrategy):
                 section.length < min_remaining_instruction
                 or (fill_first_gap and section.length < first_remaining_instruction)
             ):
-                for j in section:
-                    line[j] = CellMark.CROSSED
+                line.mark_inclusive(section.start, section.end, CellMark.CROSSED)
         return line

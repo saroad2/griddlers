@@ -58,6 +58,10 @@ class CellsLine(list):
         )
         return sections
 
+    def mark_inclusive(self, start: int, end: int, mark: CellMark):
+        for i in range(start, end + 1):
+            self[i] = mark
+
     @property
     def filled_sections(self):
         return [section for section in self.sections if section.mark == CellMark.FILLED]
