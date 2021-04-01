@@ -83,6 +83,22 @@ def case_extend_last_filled_section():
     return line, instructions, result_line
 
 
+def case_extend_first_filled_block_backwards():
+    line = "___OX_________"
+    instructions = [2, 4]
+    result_line = "XXOOX_________"
+
+    return line, instructions, result_line
+
+
+def case_extend_secondfilled_block_backwards():
+    line = "XOOOX__OX_________"
+    instructions = [3, 2, 4]
+    result_line = "XOOOXXOOX_________"
+
+    return line, instructions, result_line
+
+
 @parametrize_with_cases(argnames=["line", "instructions", "result_line"], cases=".")
 def test_gaps_filler_strategy(line, instructions, result_line):
     gaps_filler_strategy = GapsFillerStrategy()
