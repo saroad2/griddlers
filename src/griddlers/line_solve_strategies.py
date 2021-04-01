@@ -220,23 +220,23 @@ class GapsFillerStrategy(GriddlersLineSolveStrategy):
                 previous_section = remaining_sections[i - 1]
                 if (
                     previous_section.mark == CellMark.EMPTY
-                    and previous_section.length < first_remaining_instruction
+                    and previous_section.length <= first_remaining_instruction
                 ):
                     line.mark_inclusive(
                         section.start,
                         previous_section.start + first_remaining_instruction - 1,
                         CellMark.FILLED
                     )
-                if section.blocked_above:
-                    line.mark_inclusive(
-                        section.end - first_remaining_instruction + 1,
-                        section.end,
-                        CellMark.FILLED
-                    )
-                    if section.end - first_remaining_instruction >= 0:
-                        line[
-                            section.end - first_remaining_instruction
-                        ] = CellMark.CROSSED
+                    if section.blocked_above:
+                        line.mark_inclusive(
+                            section.end - first_remaining_instruction + 1,
+                            section.end,
+                            CellMark.FILLED
+                        )
+                        if section.end - first_remaining_instruction >= 0:
+                            line[
+                                section.end - first_remaining_instruction
+                            ] = CellMark.CROSSED
                 continue
             if section.mark == CellMark.CROSSED:
                 continue

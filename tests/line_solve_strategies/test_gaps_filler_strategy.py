@@ -84,17 +84,25 @@ def case_extend_last_filled_section():
 
 
 def case_extend_first_filled_block_backwards():
-    line = "___OX_________"
+    line = "__OX_________"
     instructions = [2, 4]
-    result_line = "XXOOX_________"
+    result_line = "XOOX_________"
 
     return line, instructions, result_line
 
 
-def case_extend_secondfilled_block_backwards():
+def case_extend_second_filled_block_backwards():
     line = "XOOOX__OX_________"
     instructions = [3, 2, 4]
     result_line = "XOOOXXOOX_________"
+
+    return line, instructions, result_line
+
+
+def case_second_semi_open_section():
+    line = "_____OOOX_____"
+    instructions = [2, 3, 2]
+    result_line = "_____OOOX_____"
 
     return line, instructions, result_line
 
