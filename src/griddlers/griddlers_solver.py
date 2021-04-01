@@ -1,5 +1,6 @@
 from typing import List
 
+from griddlers.cell_mark import CellMark
 from griddlers.cells_line import CellsLine
 from griddlers.griddlers_game import GriddlersGame
 from griddlers.line_solve_strategies import (
@@ -13,7 +14,7 @@ from griddlers.line_solve_strategies import (
 
 class GriddlersSolver:
 
-    def __init__(self):
+    def __init__(self, safe_mode: bool = True):
         self.strategies = [
             OverlapStrategy(),
             EdgeStrategy(),
@@ -21,6 +22,7 @@ class GriddlersSolver:
             MaxSectionIdentifierStrategy(),
             SectionsIdentificationStrategy(),
         ]
+        self.safe_mode = safe_mode
 
     def solve(self, game: GriddlersGame):
         rows_queue, columns_queue = self.get_rows_and_columns_queues(game)
@@ -63,7 +65,15 @@ class GriddlersSolver:
         if line.is_completed:
             return line
         for strategy in self.strategies:
-            line = strategy.solve(line=line, instructions=instructions)
+            result_line = strategy.solve(line=line, instructions=instructions)
+            if self.safe_mode:
+                for i, (old, new) in enumerate(zip(line, result_line)):
+                    if old != CellMark.EMPTY and old != new:
+                        raise ValueError(
+                            f"Strategy {strategy.__class__.__name__} change cell {i}"
+                            f" from {old} to {new}"
+                        )
+            line = result_line
         return line
 
     @classmethod
